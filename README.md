@@ -6,14 +6,22 @@ System-level acceptance and resilience tests for the complete Happy Wakey organi
 
 `topology.json` defines the acceptance contract for the four supported web/API avenues:
 
-1. Direct SeaORM database reads from a trusted web process, using a read-only principal and product-scoped Shared Auth subject.
-2. Stateless HTTPS JSON requests from web to the API cluster.
-3. Stateful, pooled TLS TCP connections using bounded length-delimited JSON frames.
-4. Asynchronous NATS JetStream request/reply with operation IDs, durable consumers, idempotent API handling, deadlines, and bounded replies.
+1. Direct database reads through the subject-scoped lib-core read capability,
+   backed by a database-enforced read-only principal and a verified Shared Auth
+   subject.
+2. Stateless HTTPS JSON requests from web to the API cluster, with redirects
+   disabled and a bearer on each request.
+3. Stateful, pooled TLS connections using asymmetric bounded length-delimited
+   JSON frames. Every frame is re-introspected and connection identity is never
+   cached.
+4. Asynchronous JetStream/outbox operations. Authenticated HTTPS registration
+   creates the idempotent outbox record; the durable signal contains no bearer
+   or owner. The API commits the response, awaits its durable publication, and
+   only then acknowledges the request. Core NATS request/reply is forbidden.
 
 Every avenue must preserve the same `happy-wakey-interfaces` response contracts. Shared Auth proves identity and assurance; Happy Wakey remains responsible for ownership and product authorization. Ores telemetry must omit authorization, cookies, tokens, identity data, and bodies.
 
-The committed topology and its unit tests are a reviewable target contract, not proof that every service is deployed. Production claims require live tests against exact API, web, Shared Auth, NATS, database, and infrastructure revisions.
+The committed topology and its unit tests are a reviewable target contract, not proof that every service is deployed. It records immutable implementation revisions and honestly marks the API/web revisions as draft while required CI cannot read the private official Shared Auth source. Production claims require green required CI, merged API/web commits, updated pins, and live tests against exact Shared Auth, NATS, database, and infrastructure revisions.
 
 ## Test lanes
 

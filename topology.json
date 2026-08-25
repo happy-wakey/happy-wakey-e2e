@@ -1,47 +1,91 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "implementation": {
+    "api": {
+      "revision": "89435504161a577aa5538160accc5866020d0a6f",
+      "delivery": "draft-pr",
+      "requiredCi": "blocked-private-shared-auth-source"
+    },
+    "web": {
+      "revision": "3983a1200c0179cbcfd575746d903ccec0cc4177",
+      "delivery": "draft-pr",
+      "requiredCi": "blocked-private-shared-auth-source"
+    },
+    "interfaces": "0f4c4bffa81c1e7d914281fc2056697a2f1a3020",
+    "libCore": "45977ea1c25de5e90f3638de55c89a1b47c5090f",
+    "infra": "da5b034c09bb34d5dfe7e91bea9434df8991529d",
+    "sharedAuthClients": "cc57a85b276bee81ad94decc87df2f48d49cab9f",
+    "sharedAuthInterfaces": "e60d862a59828a3690852252adcafaea1266268a"
+  },
   "sharedAuth": {
-    "ordinaryRequests": "local-jwks",
-    "immediateRevocation": "protected-introspection",
+    "identityProof": "official-typed-protected-introspection",
+    "serviceCredentialIndependent": true,
+    "requiredAudience": "happy-wakey",
+    "failClosed": true,
     "realmIsolation": true,
     "productAuthorization": "happy-wakey"
   },
   "telemetry": {
-    "provider": "ores-otel/ores.otel.log",
-    "forbiddenFields": ["authorization", "cookie", "token", "email", "provider_subject", "body"]
+    "provider": "oresoftware/next-loggers-rust",
+    "revision": "ca176fb6768a9750d262a536952268625ffd3a8a",
+    "forbiddenFields": [
+      "authorization",
+      "cookie",
+      "token",
+      "bearer_token",
+      "email",
+      "owner_id",
+      "provider_subject",
+      "body"
+    ]
+  },
+  "crossMode": {
+    "automaticFallback": false,
+    "responseContract": "happy-wakey-interfaces.ServiceOperationResponse",
+    "subjectSource": "verified-shared-auth-subject",
+    "maxRequestBytes": 32768,
+    "maxResponseBytes": 921600
   },
   "modes": [
     {
       "id": "direct_db_read",
-      "transport": "seaorm-postgresql",
-      "webRole": "read-only",
-      "apiRole": "database-authority",
-      "writesAllowed": false,
-      "durable": true
+      "transport": "lib-core-seaorm-subject-scoped",
+      "webRole": "read-only-capability",
+      "databaseRole": "read-only-principal",
+      "rawConnectionExposed": false,
+      "writesAllowed": false
     },
     {
-      "id": "stateless_http",
+      "id": "stateless_https",
       "transport": "https-json",
-      "webRole": "client",
+      "webRole": "bounded-client",
       "apiRole": "server",
-      "writesAllowed": true,
-      "durable": true
+      "redirectsAllowed": false,
+      "bearerPerRequest": true
     },
     {
-      "id": "stateful_tcp",
+      "id": "stateful_tls",
       "transport": "tls-length-delimited-json",
-      "webRole": "pooled-client",
-      "apiRole": "multiplexed-server",
-      "writesAllowed": true,
-      "durable": true
+      "webRole": "bounded-pooled-client",
+      "apiRole": "bounded-server",
+      "reauthenticateEveryFrame": true,
+      "connectionIdentityCache": false,
+      "idleTimeoutSeconds": 15,
+      "maxRequestsPerConnection": 128
     },
     {
-      "id": "async_nats",
-      "transport": "nats-jetstream-request-reply",
-      "webRole": "request-publisher",
-      "apiRole": "durable-consumer-responder",
-      "writesAllowed": true,
-      "durable": true
+      "id": "async_jetstream",
+      "transport": "nats-jetstream-outbox",
+      "registration": "authenticated-https",
+      "signalCredentialFree": true,
+      "coreNatsAllowed": false,
+      "topologyAuthority": "pre-provisioned-infra",
+      "requestConsumer": "durable-explicit-ack-pull",
+      "responseCommittedBeforePublish": true,
+      "responsePublishAckBeforeRequestAck": true,
+      "deterministicMessageId": true,
+      "redeliveryReplaysStoredResponse": true,
+      "outboxForbiddenFields": ["token", "bearer_token", "service_credential"]
     }
   ]
 }

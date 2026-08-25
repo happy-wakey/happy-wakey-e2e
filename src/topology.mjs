@@ -2,9 +2,9 @@ import { readFile } from 'node:fs/promises';
 
 export const REQUIRED_MODES = Object.freeze([
   'direct_db_read',
-  'stateless_http',
-  'stateful_tcp',
-  'async_nats',
+  'stateless_https',
+  'stateful_tls',
+  'async_jetstream',
 ]);
 
 export async function loadTopology(
@@ -14,11 +14,34 @@ export async function loadTopology(
 }
 
 export function validateTopology(topology) {
-  if (!topology?.sharedAuth?.realmIsolation) {
-    throw new Error('Shared Auth realm isolation must be enabled');
+  const auth = topology?.sharedAuth;
+  if (
+    auth?.identityProof !== 'official-typed-protected-introspection' ||
+    !auth.serviceCredentialIndependent ||
+    auth.requiredAudience !== 'happy-wakey' ||
+    !auth.failClosed ||
+    !auth.realmIsolation
+  ) {
+    throw new Error('Shared Auth typed introspection must remain fail-closed');
   }
-  if (topology.sharedAuth.productAuthorization !== 'happy-wakey') {
+  if (auth.productAuthorization !== 'happy-wakey') {
     throw new Error('product authorization must remain Happy Wakey-owned');
+  }
+
+  for (const [name, value] of Object.entries(topology.implementation ?? {})) {
+    const revision = typeof value === 'string' ? value : value?.revision;
+    if (!/^[0-9a-f]{40}$/.test(revision ?? '')) {
+      throw new Error(`implementation pin is not immutable: ${name}`);
+    }
+  }
+  for (const service of ['api', 'web']) {
+    const implementation = topology.implementation?.[service];
+    if (
+      implementation?.delivery !== 'draft-pr' ||
+      implementation.requiredCi !== 'blocked-private-shared-auth-source'
+    ) {
+      throw new Error(`${service} delivery status is not honest`);
+    }
   }
 
   const modes = new Map(topology.modes?.map((mode) => [mode.id, mode]) ?? []);
@@ -30,14 +53,57 @@ export function validateTopology(topology) {
   if (modes.size !== REQUIRED_MODES.length) {
     throw new Error('interaction modes must be unique and exactly bounded');
   }
-  if (modes.get('direct_db_read').writesAllowed) {
+  const direct = modes.get('direct_db_read');
+  if (
+    direct.writesAllowed ||
+    direct.databaseRole !== 'read-only-principal' ||
+    direct.rawConnectionExposed
+  ) {
     throw new Error('direct database access from the web tier must be read-only');
   }
-  if (modes.get('async_nats').transport !== 'nats-jetstream-request-reply') {
-    throw new Error('asynchronous mutation delivery must use a durable NATS mode');
+
+  const https = modes.get('stateless_https');
+  if (
+    https.transport !== 'https-json' ||
+    https.redirectsAllowed ||
+    !https.bearerPerRequest
+  ) {
+    throw new Error('stateless mode must remain bounded HTTPS');
   }
-  if (topology.telemetry?.provider !== 'ores-otel/ores.otel.log') {
+
+  const tcp = modes.get('stateful_tls');
+  if (
+    tcp.transport !== 'tls-length-delimited-json' ||
+    !tcp.reauthenticateEveryFrame ||
+    tcp.connectionIdentityCache
+  ) {
+    throw new Error('stateful mode must reauthenticate every TLS frame');
+  }
+
+  const nats = modes.get('async_jetstream');
+  if (
+    nats.transport !== 'nats-jetstream-outbox' ||
+    nats.registration !== 'authenticated-https' ||
+    !nats.signalCredentialFree ||
+    nats.coreNatsAllowed ||
+    nats.requestConsumer !== 'durable-explicit-ack-pull' ||
+    !nats.responseCommittedBeforePublish ||
+    !nats.responsePublishAckBeforeRequestAck ||
+    !nats.deterministicMessageId ||
+    !nats.redeliveryReplaysStoredResponse
+  ) {
+    throw new Error('async mode must preserve durable outbox/JetStream semantics');
+  }
+
+  if (topology.telemetry?.provider !== 'oresoftware/next-loggers-rust') {
     throw new Error('the Ores telemetry contract is required');
+  }
+  if (
+    topology.crossMode?.automaticFallback ||
+    topology.crossMode?.maxRequestBytes !== 32768 ||
+    topology.crossMode?.maxResponseBytes !== 921600
+  ) {
+    throw new Error('cross-mode bounds or fallback policy changed');
   }
 
   return topology;
