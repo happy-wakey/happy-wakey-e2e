@@ -37,7 +37,7 @@ export function validateTopology(topology) {
   for (const service of ['api', 'web']) {
     const implementation = topology.implementation?.[service];
     if (
-      implementation?.delivery !== 'draft-pr' ||
+      implementation?.delivery !== 'merged-main' ||
       implementation.requiredCi !== 'blocked-private-shared-auth-source'
     ) {
       throw new Error(`${service} delivery status is not honest`);
