@@ -21,7 +21,7 @@ System-level acceptance and resilience tests for the complete Happy Wakey organi
 
 Every avenue must preserve the same `happy-wakey-interfaces` response contracts. Shared Auth proves identity and assurance; Happy Wakey remains responsible for ownership and product authorization. Ores telemetry must omit authorization, cookies, tokens, identity data, and bodies.
 
-The committed topology and its unit tests are a reviewable target contract, not proof that every service is deployed. It records immutable merged API/web revisions and an explicit public-CI gate for the private official Shared Auth source; native tests and strict linting were validated separately in an authorized context against that exact revision. Production claims still require immutable image digests and live tests against the pinned Shared Auth, NATS, database, and infrastructure revisions.
+The committed topology and its unit tests are a reviewable target contract, not proof that every service is deployed. It records immutable draft API/web revisions and the exact public-CI blocker for the private official Shared Auth source. A green job that skips native compilation when that source cannot be read is not native CI evidence; native tests, strict linting, and optimized builds were instead validated locally in an authorized context against these exact revisions. Keep the server pull requests draft until a narrowly scoped read credential or an approved public/package distribution makes the required native CI gates runnable. Production claims still require immutable image digests and live tests against the pinned Shared Auth, NATS, database, and infrastructure revisions.
 
 ## Test lanes
 
