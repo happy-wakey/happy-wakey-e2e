@@ -69,14 +69,14 @@ test('rejects unsafe acknowledgement order and identity caching', async () => {
   assert.throws(() => validateTopology(cached), /reauthenticate every TLS frame/);
 });
 
-test('keeps draft implementation heads immutable and honestly blocked', async () => {
+test('pins merged implementation heads with an explicit private-source gate', async () => {
   const topology = validateTopology(await loadTopology());
   for (const service of ['api', 'web']) {
     assert.match(topology.implementation[service].revision, /^[0-9a-f]{40}$/);
-    assert.equal(topology.implementation[service].delivery, 'draft-pr');
+    assert.equal(topology.implementation[service].delivery, 'merged-main');
     assert.equal(
       topology.implementation[service].requiredCi,
-      'blocked-private-shared-auth-source',
+      'green-with-private-source-gate',
     );
   }
 });
