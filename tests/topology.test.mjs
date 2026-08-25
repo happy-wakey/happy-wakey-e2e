@@ -77,7 +77,7 @@ test('pins merged application heads with hosted current-SHA evidence', async () 
   );
   assert.equal(
     topology.implementation.web.revision,
-    '951b4185a5c6c8eafb490e9dcbab0fcb8bd57d02',
+    '5e79984641b72033fb3a1962996ed43222105a14',
   );
   assert.equal(
     topology.implementation.desktop.revision,
