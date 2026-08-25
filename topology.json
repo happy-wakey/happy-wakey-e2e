@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "sharedAuth": {
+    "ordinaryRequests": "local-jwks",
+    "immediateRevocation": "protected-introspection",
+    "realmIsolation": true,
+    "productAuthorization": "happy-wakey"
+  },
+  "telemetry": {
+    "provider": "ores-otel/ores.otel.log",
+    "forbiddenFields": ["authorization", "cookie", "token", "email", "provider_subject", "body"]
+  },
+  "modes": [
+    {
+      "id": "direct_db_read",
+      "transport": "seaorm-postgresql",
+      "webRole": "read-only",
+      "apiRole": "database-authority",
+      "writesAllowed": false,
+      "durable": true
+    },
+    {
+      "id": "stateless_http",
+      "transport": "https-json",
+      "webRole": "client",
+      "apiRole": "server",
+      "writesAllowed": true,
+      "durable": true
+    },
+    {
+      "id": "stateful_tcp",
+      "transport": "tls-length-delimited-json",
+      "webRole": "pooled-client",
+      "apiRole": "multiplexed-server",
+      "writesAllowed": true,
+      "durable": true
+    },
+    {
+      "id": "async_nats",
+      "transport": "nats-jetstream-request-reply",
+      "webRole": "request-publisher",
+      "apiRole": "durable-consumer-responder",
+      "writesAllowed": true,
+      "durable": true
+    }
+  ]
+}

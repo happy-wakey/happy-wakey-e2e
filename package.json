@@ -1,0 +1,14 @@
+{
+  "name": "@happy-wakey/e2e",
+  "version": "0.1.0",
+  "private": true,
+  "description": "System-level Happy Wakey acceptance and resilience tests",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:live": "HAPPY_WAKEY_LIVE_E2E=1 node --test tests/live.smoke.test.mjs"
+  }
+}

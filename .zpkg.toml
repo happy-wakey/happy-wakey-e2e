@@ -1,0 +1,23 @@
+[package]
+org = "happy-wakey"
+name = "happy-wakey-e2e"
+version = "0.1.0"
+description = "System-level Happy Wakey acceptance and resilience tests"
+license = "MIT"
+keywords = ["e2e", "shared-auth", "nats", "postgresql", "resilience"]
+
+[package.repository]
+vcs = "git"
+url = "https://github.com/happy-wakey/happy-wakey-e2e"
+
+[targets.repository]
+dir = "."
+adapter = "node"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = [".env", ".env.*", ".zed/**", "zed_modules/**", "node_modules/**", "artifacts/**", "**/*.log", ".DS_Store"]
+
+[scripts]
+test = "node --test"
