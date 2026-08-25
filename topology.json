@@ -2,19 +2,37 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "implementation": {
     "api": {
-      "revision": "62d0efd597e4686e6aa34d58dd97af627af09f11",
+      "revision": "60a7dac6f4a2bd16481edc776f7323129b962125",
       "delivery": "merged-main",
-      "requiredCi": "blocked-private-shared-auth-source"
+      "requiredCi": "hosted-green-current-sha"
     },
     "web": {
-      "revision": "216bac3e9f14bedb55c14cc023aca933787a45e6",
+      "revision": "951b4185a5c6c8eafb490e9dcbab0fcb8bd57d02",
       "delivery": "merged-main",
-      "requiredCi": "blocked-private-shared-auth-source"
+      "requiredCi": "hosted-green-current-sha"
     },
-    "interfaces": "0f4c4bffa81c1e7d914281fc2056697a2f1a3020",
-    "libCore": "45977ea1c25de5e90f3638de55c89a1b47c5090f",
+    "cli": {
+      "revision": "d8a7c45bef21c6540ef97a2fe08f902f7c285b15",
+      "delivery": "merged-main",
+      "requiredCi": "hosted-green-current-sha"
+    },
+    "desktop": {
+      "revision": "ac31a2a22d532575cd6ba04c500c6ccf8e7117eb",
+      "delivery": "merged-main",
+      "requiredCi": "hosted-green-current-sha"
+    },
+    "flutter": {
+      "revision": "2f748459cb942802a112825abbebd5c0ea77811c",
+      "delivery": "merged-main",
+      "requiredCi": "hosted-green-current-sha"
+    },
+    "clients": "7b8e24090dcbb6a71cf140a5108ca74fa1a01c2e",
+    "interfaces": "d6278ec8f6b2263678728b147a32dff92d52d8c8",
+    "libCore": "9638429097bc68b2aac280d4e3edaa92db96f85a",
     "infra": "da5b034c09bb34d5dfe7e91bea9434df8991529d",
-    "sharedAuthClients": "cc57a85b276bee81ad94decc87df2f48d49cab9f",
+    "sync": "5943e1764e3ada83985e6c5051869ba7e772e55c",
+    "flags2env": "b07214e30b4da675a0f591e362a2039cb47e9055",
+    "optoSync": "f8dfef90722dc423d442388f61856958a177d36f",
     "sharedAuthInterfaces": "e60d862a59828a3690852252adcafaea1266268a"
   },
   "sharedAuth": {
@@ -45,6 +63,24 @@
     "subjectSource": "verified-shared-auth-subject",
     "maxRequestBytes": 32768,
     "maxResponseBytes": 921600
+  },
+  "bluetooth": {
+    "serviceUuid": "8e0e0001-7d5a-4c3f-9c31-94e9d447fc01",
+    "commandCharacteristicUuid": "8e0e0002-7d5a-4c3f-9c31-94e9d447fc01",
+    "commandSchema": "happy-wakey.ble.preview-command.v1",
+    "maxCommandBytes": 512,
+    "scanTimeoutMs": 4000,
+    "connectTimeoutMs": 8000,
+    "credentialFieldsAllowed": false,
+    "nativeImplementations": {
+      "rust": "btleplug",
+      "flutter": "universal_ble"
+    },
+    "formalLane": {
+      "name": "bluetooth",
+      "generationFenced": true,
+      "staleCompletionsSuppressed": true
+    }
   },
   "modes": [
     {

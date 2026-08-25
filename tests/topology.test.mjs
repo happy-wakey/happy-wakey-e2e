@@ -69,22 +69,43 @@ test('rejects unsafe acknowledgement order and identity caching', async () => {
   assert.throws(() => validateTopology(cached), /reauthenticate every TLS frame/);
 });
 
-test('pins merged bounded-server heads with the unresolved private-source blocker', async () => {
+test('pins merged application heads with hosted current-SHA evidence', async () => {
   const topology = validateTopology(await loadTopology());
   assert.equal(
     topology.implementation.api.revision,
-    '62d0efd597e4686e6aa34d58dd97af627af09f11',
+    '60a7dac6f4a2bd16481edc776f7323129b962125',
   );
   assert.equal(
     topology.implementation.web.revision,
-    '216bac3e9f14bedb55c14cc023aca933787a45e6',
+    '951b4185a5c6c8eafb490e9dcbab0fcb8bd57d02',
   );
-  for (const service of ['api', 'web']) {
+  assert.equal(
+    topology.implementation.desktop.revision,
+    'ac31a2a22d532575cd6ba04c500c6ccf8e7117eb',
+  );
+  assert.equal(
+    topology.implementation.flutter.revision,
+    '2f748459cb942802a112825abbebd5c0ea77811c',
+  );
+  for (const service of ['api', 'web', 'cli', 'desktop', 'flutter']) {
     assert.match(topology.implementation[service].revision, /^[0-9a-f]{40}$/);
     assert.equal(topology.implementation[service].delivery, 'merged-main');
     assert.equal(
       topology.implementation[service].requiredCi,
-      'blocked-private-shared-auth-source',
+      'hosted-green-current-sha',
     );
   }
+});
+
+test('keeps both desktop competitors on one bounded credential-free Bluetooth contract', async () => {
+  const topology = validateTopology(await loadTopology());
+  assert.equal(topology.bluetooth.nativeImplementations.rust, 'btleplug');
+  assert.equal(topology.bluetooth.nativeImplementations.flutter, 'universal_ble');
+  assert.equal(topology.bluetooth.maxCommandBytes, 512);
+  assert.equal(topology.bluetooth.credentialFieldsAllowed, false);
+  assert.equal(topology.bluetooth.formalLane.generationFenced, true);
+
+  const weakened = await loadTopology();
+  weakened.bluetooth.credentialFieldsAllowed = true;
+  assert.throws(() => validateTopology(weakened), /Bluetooth transport contract/);
 });

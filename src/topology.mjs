@@ -34,14 +34,32 @@ export function validateTopology(topology) {
       throw new Error(`implementation pin is not immutable: ${name}`);
     }
   }
-  for (const service of ['api', 'web']) {
+  for (const service of ['api', 'web', 'cli', 'desktop', 'flutter']) {
     const implementation = topology.implementation?.[service];
     if (
       implementation?.delivery !== 'merged-main' ||
-      implementation.requiredCi !== 'blocked-private-shared-auth-source'
+      implementation.requiredCi !== 'hosted-green-current-sha'
     ) {
       throw new Error(`${service} delivery status is not honest`);
     }
+  }
+
+  const bluetooth = topology.bluetooth;
+  if (
+    bluetooth?.serviceUuid !== '8e0e0001-7d5a-4c3f-9c31-94e9d447fc01' ||
+    bluetooth.commandCharacteristicUuid !== '8e0e0002-7d5a-4c3f-9c31-94e9d447fc01' ||
+    bluetooth.commandSchema !== 'happy-wakey.ble.preview-command.v1' ||
+    bluetooth.maxCommandBytes !== 512 ||
+    bluetooth.scanTimeoutMs !== 4000 ||
+    bluetooth.connectTimeoutMs !== 8000 ||
+    bluetooth.credentialFieldsAllowed ||
+    bluetooth.nativeImplementations?.rust !== 'btleplug' ||
+    bluetooth.nativeImplementations?.flutter !== 'universal_ble' ||
+    bluetooth.formalLane?.name !== 'bluetooth' ||
+    !bluetooth.formalLane.generationFenced ||
+    !bluetooth.formalLane.staleCompletionsSuppressed
+  ) {
+    throw new Error('Bluetooth transport contract was weakened');
   }
 
   const modes = new Map(topology.modes?.map((mode) => [mode.id, mode]) ?? []);
