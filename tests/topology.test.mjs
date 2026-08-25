@@ -69,14 +69,22 @@ test('rejects unsafe acknowledgement order and identity caching', async () => {
   assert.throws(() => validateTopology(cached), /reauthenticate every TLS frame/);
 });
 
-test('pins merged implementation heads with an explicit private-source gate', async () => {
+test('pins draft bounded-server heads with the exact private-source blocker', async () => {
   const topology = validateTopology(await loadTopology());
+  assert.equal(
+    topology.implementation.api.revision,
+    'd0012f3334420535072653f94b97792aea3f2dbd',
+  );
+  assert.equal(
+    topology.implementation.web.revision,
+    '2da68bcc44f054ce23740c3493a7c5b1d24b5ce3',
+  );
   for (const service of ['api', 'web']) {
     assert.match(topology.implementation[service].revision, /^[0-9a-f]{40}$/);
-    assert.equal(topology.implementation[service].delivery, 'merged-main');
+    assert.equal(topology.implementation[service].delivery, 'draft-pr');
     assert.equal(
       topology.implementation[service].requiredCi,
-      'green-with-private-source-gate',
+      'blocked-private-shared-auth-source',
     );
   }
 });

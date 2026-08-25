@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "implementation": {
     "api": {
-      "revision": "e2cdae8a0f9eb3653e92b9845e1fefebbd53fe43",
-      "delivery": "merged-main",
-      "requiredCi": "green-with-private-source-gate"
+      "revision": "d0012f3334420535072653f94b97792aea3f2dbd",
+      "delivery": "draft-pr",
+      "requiredCi": "blocked-private-shared-auth-source"
     },
     "web": {
-      "revision": "87d69a6cad7f246ea540131cf77b6dc5349b99cb",
-      "delivery": "merged-main",
-      "requiredCi": "green-with-private-source-gate"
+      "revision": "2da68bcc44f054ce23740c3493a7c5b1d24b5ce3",
+      "delivery": "draft-pr",
+      "requiredCi": "blocked-private-shared-auth-source"
     },
     "interfaces": "0f4c4bffa81c1e7d914281fc2056697a2f1a3020",
     "libCore": "45977ea1c25de5e90f3638de55c89a1b47c5090f",
