@@ -26,6 +26,7 @@ The committed topology and its unit tests are a reviewable target contract, not 
 ## Test lanes
 
 - `tests/topology.test.mjs` fails when any avenue, authority boundary, durability requirement, or Ores telemetry contract is removed.
+- `tests/desktop-parity.test.mjs` locks Flutter/Qt destination labels, the BLE preview-command schema, and fail-closed platform URL safety (no public IP default).
 - `tests/live.smoke.test.mjs` performs bounded, no-redirect health checks when explicitly enabled with environment-provided base URLs.
 - Future black-box suites belong here for wrong issuer/audience/client/realm, revoked sessions, stale JWKS, service outages, TCP reconnects, NATS redelivery, duplicate operation IDs, database read-role enforcement, and cross-client contract parity.
 
