@@ -115,3 +115,23 @@ test('sibling Flutter and Qt trees match the contract when checked out', async (
   );
   assert.match(readFileSync(rustBle, 'utf8'), new RegExp(contract.ble.schema));
 });
+
+test('product servers do not fail-open to baked Shared Auth or API URLs', () => {
+  const files = [
+    sibling('../../happy-wakey-api-server.rs/src/lib.rs'),
+    sibling('../../happy-wakey-web-server.rs/crates/common/src/lib.rs'),
+    sibling('../../happy-wakey-cli/src/main.rs'),
+  ];
+  const forbidden = [
+    /unwrap_or_else\(\|_\| "https:\/\/auth\.oresoftware\.dev"\.into\(\)\)/,
+    /unwrap_or_else\(\|_\| "https:\/\/api\.happy-wakey\.dev"\.into\(\)\)/,
+    /default_value = "https:\/\/auth\.oresoftware\.dev"/,
+  ];
+  for (const file of files) {
+    if (!existsSync(file)) continue;
+    const source = readFileSync(file, 'utf8');
+    for (const pattern of forbidden) {
+      assert.doesNotMatch(source, pattern);
+    }
+  }
+});
