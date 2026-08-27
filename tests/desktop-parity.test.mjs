@@ -55,9 +55,14 @@ test('platform and bookmark URLs fail closed without a public IP default', async
   assert.equal(contract.urlSafety.platformUrlDefault, '');
   assert.equal(isSafeHttpUrl('https://example.test/v1'), true);
   assert.equal(isSafeHttpUrl('http://127.0.0.1:8128/'), true);
+  assert.equal(isSafeHttpUrl('https://127.0.0.1/'), true);
+  assert.equal(isSafeHttpUrl('http://[::1]/'), true);
   assert.equal(isSafeHttpUrl('http://example.test'), false);
   assert.equal(isSafeHttpUrl('https://98.90.186.114/'), false);
+  assert.equal(isSafeHttpUrl('https://[2001:db8::1]/'), false);
+  assert.equal(isSafeHttpUrl('https://user:pass@example.test/'), false);
   assert.equal(isSafeHttpUrl('javascript:alert(1)'), false);
+  assert.equal(isSafeHttpUrl('file:///etc/passwd'), false);
 });
 
 test('sibling Flutter and Qt trees match the contract when checked out', async () => {

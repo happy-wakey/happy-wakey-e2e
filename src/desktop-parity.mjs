@@ -89,7 +89,10 @@ export function isSafeHttpUrl(raw) {
     return false;
   }
   if (parsed.username || parsed.password) return false;
-  const host = parsed.hostname.toLowerCase();
+  let host = parsed.hostname.toLowerCase();
+  if (host.startsWith('[') && host.endsWith(']')) {
+    host = host.slice(1, -1);
+  }
   const loopback = host === 'localhost' || host === '127.0.0.1' || host === '::1';
   const numericIp = /^(?:\d{1,3}\.){3}\d{1,3}$/.test(host) || host.includes(':');
   if (parsed.protocol === 'http:') return loopback;
