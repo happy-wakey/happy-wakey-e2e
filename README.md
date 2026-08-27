@@ -21,12 +21,30 @@ System-level acceptance and resilience tests for the complete Happy Wakey organi
 
 Every avenue must preserve the same `happy-wakey-interfaces` response contracts. Shared Auth proves identity and assurance; Happy Wakey remains responsible for ownership and product authorization. Ores telemetry must omit authorization, cookies, tokens, identity data, and bodies.
 
-The committed topology and its unit tests are a reviewable target contract, not proof that every service is deployed. It records immutable merged API/web revisions and the exact public-CI blocker for the private official Shared Auth source. A green job that skips native compilation when that source cannot be read is not native CI evidence; native tests, strict linting, and optimized builds were instead validated locally in an authorized context against these exact revisions. The server changes were merged before a narrowly scoped read credential or approved public/package distribution made the required hosted native CI gates runnable, so the blocker remains explicit rather than being misrepresented as green. Production claims still require immutable image digests and live tests against the pinned Shared Auth, NATS, database, and infrastructure revisions.
+Both desktop competitors share one Bluetooth contract: native `btleplug` in the
+Rust/Qt app and native `universal_ble` in Flutter. They discover one product
+service UUID, write only the versioned preview-command characteristic, cap
+commands at 512 bytes, exclude credentials and customer identity, and use the
+same generation-fenced formal Bluetooth lane. Scans and connections are bounded
+to four and eight seconds respectively.
+
+The committed topology and its unit tests are a reviewable source/revision
+contract, not proof that every service is deployed. It records immutable merged
+API, web, CLI, Rust desktop, Flutter, interface, core, client, sync, and
+infrastructure revisions. The five executable application heads require green
+hosted checks on those exact merged `main` revisions; authentication now uses
+the public, versioned Shared Auth introspection wire contract rather than a
+private source dependency. Production claims still require immutable image
+digests and live tests against the pinned Shared Auth, NATS, database,
+Bluetooth hardware, and infrastructure revisions.
 
 ## Test lanes
 
 - `tests/topology.test.mjs` fails when any avenue, authority boundary, durability requirement, or Ores telemetry contract is removed.
-- `tests/desktop-parity.test.mjs` locks Flutter/Qt destination labels, the BLE preview-command schema, and fail-closed platform URL safety (no public IP default).
+- The same suite rejects Bluetooth UUID drift, credentials in device commands,
+  unbounded commands/timeouts, missing native implementations, and stale-effect
+  acceptance in either desktop competitor.
+- `tests/desktop-parity.test.mjs` locks Flutter/Qt destination labels, the BLE preview-command schema, and fail-closed platform URL safety (no public IP default and no baked Shared Auth/API URLs).
 - `tests/live.smoke.test.mjs` performs bounded, no-redirect health checks when explicitly enabled with environment-provided base URLs.
 - Future black-box suites belong here for wrong issuer/audience/client/realm, revoked sessions, stale JWKS, service outages, TCP reconnects, NATS redelivery, duplicate operation IDs, database read-role enforcement, and cross-client contract parity.
 
