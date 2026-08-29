@@ -44,6 +44,7 @@ Bluetooth hardware, and infrastructure revisions.
 - The same suite rejects Bluetooth UUID drift, credentials in device commands,
   unbounded commands/timeouts, missing native implementations, and stale-effect
   acceptance in either desktop competitor.
+- `tests/desktop-parity.test.mjs` locks Flutter/Qt destination labels, the BLE preview-command schema, and fail-closed platform URL safety (no public IP default and no baked Shared Auth/API URLs).
 - `tests/live.smoke.test.mjs` performs bounded, no-redirect health checks when explicitly enabled with environment-provided base URLs.
 - Future black-box suites belong here for wrong issuer/audience/client/realm, revoked sessions, stale JWKS, service outages, TCP reconnects, NATS redelivery, duplicate operation IDs, database read-role enforcement, and cross-client contract parity.
 

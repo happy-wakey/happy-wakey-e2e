@@ -1,0 +1,31 @@
+{
+  "schema": "happy-wakey.desktop-parity.v1",
+  "destinations": [
+    { "id": "home", "label": "Home" },
+    { "id": "calendar", "label": "Calendar" },
+    { "id": "weather", "label": "Weather" },
+    { "id": "markets", "label": "Markets" },
+    { "id": "news", "label": "News" },
+    { "id": "planner", "label": "Planner" },
+    { "id": "focus", "label": "Focus" },
+    { "id": "devices", "label": "Devices" },
+    { "id": "browser", "label": "Browser" },
+    { "id": "settings", "label": "Settings" }
+  ],
+  "ble": {
+    "serviceUuid": "8e0e0001-7d5a-4c3f-9c31-94e9d447fc01",
+    "commandUuid": "8e0e0002-7d5a-4c3f-9c31-94e9d447fc01",
+    "schema": "happy-wakey.ble.preview-command.v1",
+    "action": "preview_alarm",
+    "durationMs": 3000,
+    "maxBytes": 512,
+    "forbiddenFields": ["token", "subject", "owner_id"]
+  },
+  "urlSafety": {
+    "platformUrlDefault": "",
+    "forbidPublicIpHosts": true,
+    "httpsRequiredExceptLoopback": true,
+    "bookmarkSchemes": ["https"],
+    "loopbackHttpAllowed": true
+  }
+}
