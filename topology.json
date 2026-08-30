@@ -12,7 +12,7 @@
       "requiredCi": "hosted-green-current-sha"
     },
     "cli": {
-      "revision": "0e1da9ebc591f8d0be5cb5dd14f492e6db01220f",
+      "revision": "419c1144e3ca109d8056adf5007b149de7ea4950",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
