@@ -2,35 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "implementation": {
     "api": {
-      "revision": "60a7dac6f4a2bd16481edc776f7323129b962125",
+      "revision": "fbf34290d37b5d2397155376d5d0a13965739109",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "web": {
-      "revision": "5e79984641b72033fb3a1962996ed43222105a14",
+      "revision": "6e74dde8f7fbd1d3fb9708e5a87c72564c52794f",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "cli": {
-      "revision": "d8a7c45bef21c6540ef97a2fe08f902f7c285b15",
+      "revision": "0e1da9ebc591f8d0be5cb5dd14f492e6db01220f",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "desktop": {
-      "revision": "ac31a2a22d532575cd6ba04c500c6ccf8e7117eb",
+      "revision": "e9f5bc1829692f4ed518e5e43b3256fe1b388972",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "flutter": {
-      "revision": "2f748459cb942802a112825abbebd5c0ea77811c",
+      "revision": "04b41587209359f731a3185e52b9a498edd302f4",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
-    "clients": "7b8e24090dcbb6a71cf140a5108ca74fa1a01c2e",
-    "interfaces": "d6278ec8f6b2263678728b147a32dff92d52d8c8",
-    "libCore": "9638429097bc68b2aac280d4e3edaa92db96f85a",
-    "infra": "da5b034c09bb34d5dfe7e91bea9434df8991529d",
-    "sync": "5943e1764e3ada83985e6c5051869ba7e772e55c",
+    "clients": "c7b4c5c3c8a5361207825960064ad2d28ec838a7",
+    "interfaces": "ed8268dac5add88737060beb72b31f1b60b58a07",
+    "libCore": "a219c1584c8a58748825982ef3fe6149d6deff5e",
+    "infra": "039653036006d8d24266511ba1faff5e62bff45f",
+    "sync": "a31651db7cae6648fd8563c45a39d08ece673836",
     "flags2env": "b07214e30b4da675a0f591e362a2039cb47e9055",
     "optoSync": "f8dfef90722dc423d442388f61856958a177d36f",
     "sharedAuthInterfaces": "e60d862a59828a3690852252adcafaea1266268a"

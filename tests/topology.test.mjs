@@ -73,19 +73,19 @@ test('pins merged application heads with hosted current-SHA evidence', async () 
   const topology = validateTopology(await loadTopology());
   assert.equal(
     topology.implementation.api.revision,
-    '60a7dac6f4a2bd16481edc776f7323129b962125',
+    'fbf34290d37b5d2397155376d5d0a13965739109',
   );
   assert.equal(
     topology.implementation.web.revision,
-    '5e79984641b72033fb3a1962996ed43222105a14',
+    '6e74dde8f7fbd1d3fb9708e5a87c72564c52794f',
   );
   assert.equal(
     topology.implementation.desktop.revision,
-    'ac31a2a22d532575cd6ba04c500c6ccf8e7117eb',
+    'e9f5bc1829692f4ed518e5e43b3256fe1b388972',
   );
   assert.equal(
     topology.implementation.flutter.revision,
-    '2f748459cb942802a112825abbebd5c0ea77811c',
+    '04b41587209359f731a3185e52b9a498edd302f4',
   );
   for (const service of ['api', 'web', 'cli', 'desktop', 'flutter']) {
     assert.match(topology.implementation[service].revision, /^[0-9a-f]{40}$/);
