@@ -73,11 +73,11 @@ test('pins merged application heads with hosted current-SHA evidence', async () 
   const topology = validateTopology(await loadTopology());
   assert.equal(
     topology.implementation.api.revision,
-    'fbf34290d37b5d2397155376d5d0a13965739109',
+    'ff840aa61509c4e99fd3a83a57fca899afc2d08f',
   );
   assert.equal(
     topology.implementation.web.revision,
-    '6e74dde8f7fbd1d3fb9708e5a87c72564c52794f',
+    'ac2c9acc4dc4d0eb2d8273568699dbb722bcb395',
   );
   assert.equal(
     topology.implementation.desktop.revision,
