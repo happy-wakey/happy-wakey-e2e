@@ -11,6 +11,34 @@ test('declares all four web/API interaction avenues', async () => {
   );
 });
 
+test('declares bounded email, message, sleep, and biometric brief surfaces', async () => {
+  const topology = validateTopology(await loadTopology());
+  assert.deepEqual(
+    topology.morningBrief.surfaces.map(({ id }) => id),
+    ['important_email', 'direct_messages', 'sleep', 'biometrics'],
+  );
+  assert.deepEqual(
+    topology.morningBrief.surfaces.map(({ route }) => route),
+    [
+      '/v1/inbox/digest',
+      '/v1/messages/digest',
+      '/v1/health/sleep/{day}',
+      '/v1/health/biometrics/{day}',
+    ],
+  );
+  assert.equal(topology.morningBrief.bounds.maxItemsPerSurface, 20);
+  assert.equal(topology.morningBrief.failurePolicy.independentLanes, true);
+  assert.equal(topology.morningBrief.failurePolicy.failClosed, true);
+
+  const unbounded = await loadTopology();
+  unbounded.morningBrief.surfaces[0].maxItems = 21;
+  assert.throws(() => validateTopology(unbounded), /surface bounds/);
+
+  const failOpen = await loadTopology();
+  failOpen.morningBrief.failurePolicy.failClosed = false;
+  assert.throws(() => validateTopology(failOpen), /fail-closed/);
+});
+
 test('keeps direct database work read-only and JetStream durable', async () => {
   const topology = validateTopology(await loadTopology());
   const direct = topology.modes.find(({ id }) => id === 'direct_db_read');

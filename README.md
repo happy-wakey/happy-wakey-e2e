@@ -21,6 +21,16 @@ System-level acceptance and resilience tests for the complete Happy Wakey organi
 
 Every avenue must preserve the same `happy-wakey-interfaces` response contracts. Shared Auth proves identity and assurance; Happy Wakey remains responsible for ownership and product authorization. Ores telemetry must omit authorization, cookies, tokens, identity data, and bodies.
 
+The topology also records the four morning-brief surfaces: provider-scoped
+important email (`/v1/inbox/digest`), an optional policy-scoped direct-message
+gateway (`/v1/messages/digest`), consented sleep (`/v1/health/sleep/{day}`),
+and consented personal-baseline biometrics (`/v1/health/biometrics/{day}`).
+Each surface is independently bounded to 20 items (one daily health summary),
+uses the `happy-wakey-interfaces` delivery and composition contracts, and must
+remain fail-closed with an explicit degraded state when its provider is absent
+or unavailable. The matrix intentionally does not promise unsupported social
+platform access or a clinical diagnosis.
+
 Both desktop competitors share one Bluetooth contract: native `btleplug` in the
 Rust/Qt app and native `universal_ble` in Flutter. They discover one product
 service UUID, write only the versioned preview-command characteristic, cap
@@ -41,6 +51,8 @@ Bluetooth hardware, and infrastructure revisions.
 ## Test lanes
 
 - `tests/topology.test.mjs` fails when any avenue, authority boundary, durability requirement, or Ores telemetry contract is removed.
+- The same topology tests lock the morning-brief contract authority, canonical
+  routes, per-surface bounds, independent lanes, and fail-closed degradation.
 - The same suite rejects Bluetooth UUID drift, credentials in device commands,
   unbounded commands/timeouts, missing native implementations, and stale-effect
   acceptance in either desktop competitor.
