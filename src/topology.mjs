@@ -7,6 +7,88 @@ export const REQUIRED_MODES = Object.freeze([
   'async_jetstream',
 ]);
 
+const REQUIRED_BRIEF_SURFACES = Object.freeze({
+  important_email: {
+    section: 'inbox',
+    route: '/v1/inbox/digest',
+    authorization: 'provider-scoped-read-only',
+    contentPolicy: 'metadata-or-bounded-snippet',
+  },
+  direct_messages: {
+    section: 'messages',
+    route: '/v1/messages/digest',
+    authorization: 'optional-gateway-policy-scoped',
+    contentPolicy: 'platform-access-level',
+  },
+  sleep: {
+    section: 'sleep',
+    route: '/v1/health/sleep/{day}',
+    authorization: 'explicit-device-consent',
+    contentPolicy: 'measured-or-modeled-labelled',
+  },
+  biometrics: {
+    section: 'biometrics',
+    route: '/v1/health/biometrics/{day}',
+    authorization: 'explicit-device-consent',
+    contentPolicy: 'personal-baseline-no-diagnosis',
+  },
+});
+
+function validateMorningBrief(brief) {
+  if (
+    brief?.deliveryContract !== 'happy-wakey-interfaces.morning-briefing.v1' ||
+    brief?.compositionContract !==
+      'happy-wakey-interfaces.briefing-composition.v1'
+  ) {
+    throw new Error('morning brief contract authority is required');
+  }
+
+  const surfaces = brief.surfaces;
+  if (!Array.isArray(surfaces) || surfaces.length !== 4) {
+    throw new Error('morning brief must declare exactly four surfaces');
+  }
+  const seen = new Set();
+  for (const surface of surfaces) {
+    const expected = REQUIRED_BRIEF_SURFACES[surface?.id];
+    if (!expected || seen.has(surface.id)) {
+      throw new Error('morning brief surfaces must be unique and complete');
+    }
+    seen.add(surface.id);
+    for (const [key, value] of Object.entries(expected)) {
+      if (surface[key] !== value) {
+        throw new Error(`morning brief ${surface.id} contract drifted`);
+      }
+    }
+    if (
+      !Number.isInteger(surface.maxItems) ||
+      surface.maxItems < 1 ||
+      surface.maxItems > 20
+    ) {
+      throw new Error('morning brief surface bounds are invalid');
+    }
+  }
+  if (seen.size !== Object.keys(REQUIRED_BRIEF_SURFACES).length) {
+    throw new Error('morning brief surfaces are incomplete');
+  }
+
+  const bounds = brief.bounds;
+  if (
+    bounds?.maxSurfaces !== 4 ||
+    bounds.maxItemsPerSurface !== 20 ||
+    bounds.maxTextBytes !== 4096
+  ) {
+    throw new Error('morning brief bounds are invalid');
+  }
+  const failurePolicy = brief.failurePolicy;
+  if (
+    !failurePolicy?.independentLanes ||
+    !failurePolicy.failClosed ||
+    !failurePolicy.degradedStateRequired
+  ) {
+    throw new Error('morning brief failure policy must remain fail-closed');
+  }
+}
+
 export async function loadTopology(
   location = new URL('../topology.json', import.meta.url),
 ) {
@@ -123,6 +205,8 @@ export function validateTopology(topology) {
   ) {
     throw new Error('cross-mode bounds or fallback policy changed');
   }
+
+  validateMorningBrief(topology.morningBrief);
 
   return topology;
 }

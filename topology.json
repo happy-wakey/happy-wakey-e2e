@@ -82,6 +82,54 @@
       "staleCompletionsSuppressed": true
     }
   },
+  "morningBrief": {
+    "deliveryContract": "happy-wakey-interfaces.morning-briefing.v1",
+    "compositionContract": "happy-wakey-interfaces.briefing-composition.v1",
+    "surfaces": [
+      {
+        "id": "important_email",
+        "section": "inbox",
+        "route": "/v1/inbox/digest",
+        "authorization": "provider-scoped-read-only",
+        "contentPolicy": "metadata-or-bounded-snippet",
+        "maxItems": 20
+      },
+      {
+        "id": "direct_messages",
+        "section": "messages",
+        "route": "/v1/messages/digest",
+        "authorization": "optional-gateway-policy-scoped",
+        "contentPolicy": "platform-access-level",
+        "maxItems": 20
+      },
+      {
+        "id": "sleep",
+        "section": "sleep",
+        "route": "/v1/health/sleep/{day}",
+        "authorization": "explicit-device-consent",
+        "contentPolicy": "measured-or-modeled-labelled",
+        "maxItems": 1
+      },
+      {
+        "id": "biometrics",
+        "section": "biometrics",
+        "route": "/v1/health/biometrics/{day}",
+        "authorization": "explicit-device-consent",
+        "contentPolicy": "personal-baseline-no-diagnosis",
+        "maxItems": 1
+      }
+    ],
+    "bounds": {
+      "maxSurfaces": 4,
+      "maxItemsPerSurface": 20,
+      "maxTextBytes": 4096
+    },
+    "failurePolicy": {
+      "independentLanes": true,
+      "failClosed": true,
+      "degradedStateRequired": true
+    }
+  },
   "modes": [
     {
       "id": "direct_db_read",
