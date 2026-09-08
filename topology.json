@@ -2,17 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "implementation": {
     "api": {
-      "revision": "ff840aa61509c4e99fd3a83a57fca899afc2d08f",
+      "revision": "f027bb65f795e54b1bcfbc36db3098da3e4fcc2a",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "web": {
-      "revision": "ac2c9acc4dc4d0eb2d8273568699dbb722bcb395",
+      "revision": "81d4a56e2d7af87623fdc0af73a90e0b5dc77870",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
     "cli": {
-      "revision": "419c1144e3ca109d8056adf5007b149de7ea4950",
+      "revision": "f5e1702fbeb4efd0ae891dc7f6ce858cd8a8962c",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
@@ -22,18 +22,61 @@
       "requiredCi": "hosted-green-current-sha"
     },
     "flutter": {
-      "revision": "04b41587209359f731a3185e52b9a498edd302f4",
+      "revision": "4c8b391b98b267d13b92c93360d2854987364b4e",
       "delivery": "merged-main",
       "requiredCi": "hosted-green-current-sha"
     },
-    "clients": "c7b4c5c3c8a5361207825960064ad2d28ec838a7",
-    "interfaces": "ed8268dac5add88737060beb72b31f1b60b58a07",
-    "libCore": "a219c1584c8a58748825982ef3fe6149d6deff5e",
-    "infra": "039653036006d8d24266511ba1faff5e62bff45f",
-    "sync": "a31651db7cae6648fd8563c45a39d08ece673836",
+    "adminApi": "b4aa792b0238b56083f62a90e1c94dfea1835c15",
+    "adminWeb": "9440f1b7628a1b8a0f66f72ac95b0c187775eecc",
+    "assets": "bac708f7d9f9a92ceeb04f69fef6a31bec478899",
+    "clients": "ee91398f0a4ea2151eb418930a887e56acf6e621",
+    "docs": "fc8bc70dd5d9020e45c2efab07209334650a02a0",
+    "infra": "fa0dea3266db095fac45b4660a6c1652ce034e27",
+    "interfaces": "3b9161f5314417cfcccd2e76c32f66d84c2eea0a",
+    "lambdas": "b960084d7e0a47768ddfe56b25f988dc92e7ddb2",
+    "libCore": "b56e8bc06fb22ebe23725b01993f9eeed721d1ae",
+    "mcp": "c2fb14705998f7a586510b3368ccd78f41368f33",
+    "monorepo": "2a4741a52631da8826d603d51f408e29c1ed30ba",
+    "ormCore": "fa2180fbcc6b4066ba38609a9c90fad54e1710c6",
+    "pubLibCore": "14a35640992ea2daed788e7ed5c0ef19c18b8c7b",
+    "sidecar": "abb0b3b3fb420cc3819ab7b3a407347dc8893cba",
+    "sync": "9d37be71f687709c6c3138b2528e51d6f1d62d04",
+    "marketing": "66369bae51f5707625aeb94e99f64d5bc5166448",
+    "legacyRustApp": "1c326c7f686db720cf8f342b8045b0ebc051a83b",
     "flags2env": "b07214e30b4da675a0f591e362a2039cb47e9055",
     "optoSync": "f8dfef90722dc423d442388f61856958a177d36f",
     "sharedAuthInterfaces": "e60d862a59828a3690852252adcafaea1266268a"
+  },
+  "fleet": {
+    "organization": "happy-wakey",
+    "requiredRepositories": [
+      "happy-wakey-admin-api-server.rs",
+      "happy-wakey-admin-web-server.rs",
+      "happy-wakey-api-server.rs",
+      "happy-wakey-assets",
+      "happy-wakey-cli",
+      "happy-wakey-clients",
+      "happy-wakey-desktop-app.rs",
+      "happy-wakey-docs",
+      "happy-wakey-e2e",
+      "happy-wakey-flutter",
+      "happy-wakey-infra",
+      "happy-wakey-interfaces",
+      "happy-wakey-lambdas",
+      "happy-wakey-lib-core",
+      "happy-wakey-mcp-server.rs",
+      "happy-wakey-monorepo",
+      "happy-wakey-orm-core",
+      "happy-wakey-pub-lib-core",
+      "happy-wakey-sidecar.rs",
+      "happy-wakey-sync",
+      "happy-wakey-web-server.rs",
+      "happy-wakey.github.io",
+      "happy-wakey.rs"
+    ],
+    "allRepositoriesNonEmpty": true,
+    "archivedRepositoriesAllowed": false,
+    "selfRevisionPolicy": "merged-commit-is-authority"
   },
   "sharedAuth": {
     "identityProof": "official-typed-protected-introspection",
@@ -64,6 +107,74 @@
     "maxRequestBytes": 32768,
     "maxResponseBytes": 921600
   },
+  "onboarding": {
+    "identityAuthority": "github.com/shared-auth",
+    "accountKinds": ["individual", "organization"],
+    "entryHosts": {
+      "individual": "user.hawky.pro",
+      "organization": "org.hawky.pro"
+    },
+    "organizationMembershipRoles": ["member", "manager", "org_admin", "owner"],
+    "seatAllocationRequired": true,
+    "connectorConsentRequired": true,
+    "credentialsInProductDatabaseAllowed": false
+  },
+  "domains": {
+    "hawky.pro": "marketing",
+    "app.hawky.pro": "primary-web",
+    "user.hawky.pro": "individual-login-and-pages",
+    "org.hawky.pro": "organization-login-and-pages",
+    "api.hawky.pro": "public-api",
+    "main.hawky.pro": "organization-main-deep-link",
+    "admin.hawky.pro": "private-admin-web",
+    "admin-api.hawky.pro": "private-admin-api",
+    "m.hawky.pro": "mobile-web"
+  },
+  "realtime": {
+    "browserTransport": "cloudflare-durable-object-websocket-hibernation",
+    "serverTransport": "tls-length-delimited-json",
+    "tenantPartitioned": true,
+    "sharedAuthAdmissionRequired": true,
+    "maxWebSocketSessionSeconds": 900,
+    "maxSocketsPerTenantObject": 128,
+    "maxFrameBytes": 32768,
+    "adminMcpNetwork": "private-vpc-mtls",
+    "adminPublicIngressAllowed": false
+  },
+  "messageCuration": {
+    "providers": ["email", "whatsapp", "linkedin", "x_dm", "slack", "teams"],
+    "supportedApisWebhooksOrExportsOnly": true,
+    "scrapingAllowed": false,
+    "consentRequired": true,
+    "minimumUsefulnessScore": 0.8,
+    "decisionRequiresContentHash": true,
+    "deepLinkRequiresUsefulDecision": true,
+    "deepLinkRequiresReauthentication": true,
+    "feedFallbackAllowed": false
+  },
+  "intelligence": {
+    "independentInterfaceAuthorities": ["typespec", "json-schema"],
+    "runtimeValidationAuthorities": ["json-schema", "protobuf"],
+    "databaseScopeKeys": ["tenant_id", "subject_id"],
+    "databaseRlsRequired": true,
+    "vectorDimensions": {"minimum": 1, "maximum": 4100},
+    "regressionCorrections": ["none", "bonferroni", "benjamini_hochberg"],
+    "causalClaimsAllowed": false
+  },
+  "chat": {
+    "authority": "github.com/ores-chat",
+    "audiences": ["sales_visitor", "customer_support", "organization_admin", "internal_operator", "owner"],
+    "explicitSearchScopesRequired": true,
+    "adminMcpConnection": "private-vpc-mtls"
+  },
+  "commonBackend": {
+    "middleware": "github.com/oresoftware/ores-middleware",
+    "rateLimiting": "github.com/ores-rate-limit",
+    "telemetry": "github.com/ores-otel",
+    "stateSync": "github.com/opto-sync",
+    "chat": "github.com/ores-chat",
+    "cliConfiguration": "github.com/flags-2-env"
+  },
   "bluetooth": {
     "serviceUuid": "8e0e0001-7d5a-4c3f-9c31-94e9d447fc01",
     "commandCharacteristicUuid": "8e0e0002-7d5a-4c3f-9c31-94e9d447fc01",
@@ -85,6 +196,40 @@
   "morningBrief": {
     "deliveryContract": "happy-wakey-interfaces.morning-briefing.v1",
     "compositionContract": "happy-wakey-interfaces.briefing-composition.v1",
+    "cardKinds": [
+      "this_day_in_history",
+      "useful_message",
+      "email_bottleneck",
+      "team_bottleneck",
+      "calendar",
+      "weather",
+      "extended_outlook",
+      "flight",
+      "market",
+      "kpi",
+      "task",
+      "news",
+      "audio_briefing"
+    ],
+    "compositionLanes": [
+      "briefing",
+      "day_plan",
+      "tasks",
+      "habits",
+      "focus",
+      "sleep",
+      "biometrics",
+      "inbox",
+      "messages",
+      "markets",
+      "environment",
+      "modules"
+    ],
+    "feedless": true,
+    "maxWeatherCities": 10,
+    "reliableForecastHorizonDays": 14,
+    "extendedOutlookMaxDays": 21,
+    "extendedOutlookUncertaintyLabelRequired": true,
     "surfaces": [
       {
         "id": "important_email",

@@ -7,6 +7,70 @@ export const REQUIRED_MODES = Object.freeze([
   'async_jetstream',
 ]);
 
+export const REQUIRED_REPOSITORIES = Object.freeze([
+  'happy-wakey-admin-api-server.rs',
+  'happy-wakey-admin-web-server.rs',
+  'happy-wakey-api-server.rs',
+  'happy-wakey-assets',
+  'happy-wakey-cli',
+  'happy-wakey-clients',
+  'happy-wakey-desktop-app.rs',
+  'happy-wakey-docs',
+  'happy-wakey-e2e',
+  'happy-wakey-flutter',
+  'happy-wakey-infra',
+  'happy-wakey-interfaces',
+  'happy-wakey-lambdas',
+  'happy-wakey-lib-core',
+  'happy-wakey-mcp-server.rs',
+  'happy-wakey-monorepo',
+  'happy-wakey-orm-core',
+  'happy-wakey-pub-lib-core',
+  'happy-wakey-sidecar.rs',
+  'happy-wakey-sync',
+  'happy-wakey-web-server.rs',
+  'happy-wakey.github.io',
+  'happy-wakey.rs',
+]);
+
+export const REQUIRED_CARD_KINDS = Object.freeze([
+  'this_day_in_history',
+  'useful_message',
+  'email_bottleneck',
+  'team_bottleneck',
+  'calendar',
+  'weather',
+  'extended_outlook',
+  'flight',
+  'market',
+  'kpi',
+  'task',
+  'news',
+  'audio_briefing',
+]);
+
+const REQUIRED_COMPOSITION_LANES = Object.freeze([
+  'briefing',
+  'day_plan',
+  'tasks',
+  'habits',
+  'focus',
+  'sleep',
+  'biometrics',
+  'inbox',
+  'messages',
+  'markets',
+  'environment',
+  'modules',
+]);
+
+function hasExactMembers(actual, expected) {
+  return Array.isArray(actual) &&
+    actual.length === expected.length &&
+    new Set(actual).size === actual.length &&
+    expected.every((value) => actual.includes(value));
+}
+
 const REQUIRED_BRIEF_SURFACES = Object.freeze({
   important_email: {
     section: 'inbox',
@@ -41,6 +105,17 @@ function validateMorningBrief(brief) {
       'happy-wakey-interfaces.briefing-composition.v1'
   ) {
     throw new Error('morning brief contract authority is required');
+  }
+  if (
+    !hasExactMembers(brief.cardKinds, REQUIRED_CARD_KINDS) ||
+    !hasExactMembers(brief.compositionLanes, REQUIRED_COMPOSITION_LANES) ||
+    !brief.feedless ||
+    brief.maxWeatherCities !== 10 ||
+    brief.reliableForecastHorizonDays !== 14 ||
+    brief.extendedOutlookMaxDays !== 21 ||
+    !brief.extendedOutlookUncertaintyLabelRequired
+  ) {
+    throw new Error('morning HUD feature or uncertainty policy drifted');
   }
 
   const surfaces = brief.surfaces;
@@ -89,6 +164,155 @@ function validateMorningBrief(brief) {
   }
 }
 
+function validateFleet(topology) {
+  const fleet = topology.fleet;
+  if (
+    fleet?.organization !== 'happy-wakey' ||
+    !hasExactMembers(fleet.requiredRepositories, REQUIRED_REPOSITORIES) ||
+    !fleet.allRepositoriesNonEmpty ||
+    fleet.archivedRepositoriesAllowed ||
+    fleet.selfRevisionPolicy !== 'merged-commit-is-authority'
+  ) {
+    throw new Error('Happy Wakey fleet completeness contract drifted');
+  }
+
+  const onboarding = topology.onboarding;
+  if (
+    onboarding?.identityAuthority !== 'github.com/shared-auth' ||
+    !hasExactMembers(onboarding.accountKinds, ['individual', 'organization']) ||
+    onboarding.entryHosts?.individual !== 'user.hawky.pro' ||
+    onboarding.entryHosts?.organization !== 'org.hawky.pro' ||
+    !hasExactMembers(onboarding.organizationMembershipRoles, [
+      'member',
+      'manager',
+      'org_admin',
+      'owner',
+    ]) ||
+    !onboarding.seatAllocationRequired ||
+    !onboarding.connectorConsentRequired ||
+    onboarding.credentialsInProductDatabaseAllowed
+  ) {
+    throw new Error('B2C/B2B onboarding contract drifted');
+  }
+
+  const expectedDomains = {
+    'hawky.pro': 'marketing',
+    'app.hawky.pro': 'primary-web',
+    'user.hawky.pro': 'individual-login-and-pages',
+    'org.hawky.pro': 'organization-login-and-pages',
+    'api.hawky.pro': 'public-api',
+    'main.hawky.pro': 'organization-main-deep-link',
+    'admin.hawky.pro': 'private-admin-web',
+    'admin-api.hawky.pro': 'private-admin-api',
+    'm.hawky.pro': 'mobile-web',
+  };
+  if (
+    Object.keys(topology.domains ?? {}).length !==
+      Object.keys(expectedDomains).length ||
+    Object.entries(expectedDomains).some(
+      ([host, purpose]) => topology.domains?.[host] !== purpose,
+    )
+  ) {
+    throw new Error('hawky.pro host routing contract drifted');
+  }
+}
+
+function validateRealtimeAndIntelligence(topology) {
+  const realtime = topology.realtime;
+  if (
+    realtime?.browserTransport !==
+      'cloudflare-durable-object-websocket-hibernation' ||
+    realtime.serverTransport !== 'tls-length-delimited-json' ||
+    !realtime.tenantPartitioned ||
+    !realtime.sharedAuthAdmissionRequired ||
+    realtime.maxWebSocketSessionSeconds !== 900 ||
+    realtime.maxSocketsPerTenantObject !== 128 ||
+    realtime.maxFrameBytes !== 32768 ||
+    realtime.adminMcpNetwork !== 'private-vpc-mtls' ||
+    realtime.adminPublicIngressAllowed
+  ) {
+    throw new Error('realtime or private admin boundary drifted');
+  }
+
+  const curation = topology.messageCuration;
+  if (
+    !hasExactMembers(curation?.providers, [
+      'email',
+      'whatsapp',
+      'linkedin',
+      'x_dm',
+      'slack',
+      'teams',
+    ]) ||
+    !curation.supportedApisWebhooksOrExportsOnly ||
+    curation.scrapingAllowed ||
+    !curation.consentRequired ||
+    curation.minimumUsefulnessScore !== 0.8 ||
+    !curation.decisionRequiresContentHash ||
+    !curation.deepLinkRequiresUsefulDecision ||
+    !curation.deepLinkRequiresReauthentication ||
+    curation.feedFallbackAllowed
+  ) {
+    throw new Error('feedless message curation policy drifted');
+  }
+
+  const intelligence = topology.intelligence;
+  if (
+    !hasExactMembers(intelligence?.independentInterfaceAuthorities, [
+      'typespec',
+      'json-schema',
+    ]) ||
+    !hasExactMembers(intelligence.runtimeValidationAuthorities, [
+      'json-schema',
+      'protobuf',
+    ]) ||
+    !hasExactMembers(intelligence.databaseScopeKeys, [
+      'tenant_id',
+      'subject_id',
+    ]) ||
+    !intelligence.databaseRlsRequired ||
+    intelligence.vectorDimensions?.minimum !== 1 ||
+    intelligence.vectorDimensions?.maximum !== 4100 ||
+    !hasExactMembers(intelligence.regressionCorrections, [
+      'none',
+      'bonferroni',
+      'benjamini_hochberg',
+    ]) ||
+    intelligence.causalClaimsAllowed
+  ) {
+    throw new Error('vector, regression, or schema authority drifted');
+  }
+
+  const chat = topology.chat;
+  if (
+    chat?.authority !== 'github.com/ores-chat' ||
+    !hasExactMembers(chat.audiences, [
+      'sales_visitor',
+      'customer_support',
+      'organization_admin',
+      'internal_operator',
+      'owner',
+    ]) ||
+    !chat.explicitSearchScopesRequired ||
+    chat.adminMcpConnection !== 'private-vpc-mtls'
+  ) {
+    throw new Error('Ores Chat audience or MCP isolation drifted');
+  }
+
+  const common = topology.commonBackend;
+  const expectedAuthorities = [
+    ['middleware', 'github.com/oresoftware/ores-middleware'],
+    ['rateLimiting', 'github.com/ores-rate-limit'],
+    ['telemetry', 'github.com/ores-otel'],
+    ['stateSync', 'github.com/opto-sync'],
+    ['chat', 'github.com/ores-chat'],
+    ['cliConfiguration', 'github.com/flags-2-env'],
+  ];
+  if (expectedAuthorities.some(([name, value]) => common?.[name] !== value)) {
+    throw new Error('common backend authority drifted');
+  }
+}
+
 export async function loadTopology(
   location = new URL('../topology.json', import.meta.url),
 ) {
@@ -96,6 +320,8 @@ export async function loadTopology(
 }
 
 export function validateTopology(topology) {
+  validateFleet(topology);
+  validateRealtimeAndIntelligence(topology);
   const auth = topology?.sharedAuth;
   if (
     auth?.identityProof !== 'official-typed-protected-introspection' ||
