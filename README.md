@@ -21,7 +21,8 @@ System-level acceptance and resilience tests for the complete Happy Wakey organi
 
 Every avenue must preserve the same `happy-wakey-interfaces` response contracts. Shared Auth proves identity and assurance; Happy Wakey remains responsible for ownership and product authorization. Ores telemetry must omit authorization, cookies, tokens, identity data, and bodies.
 
-The topology also records the four morning-brief surfaces: provider-scoped
+The topology also records the four bounded data endpoints that compose the
+morning experience: provider-scoped
 important email (`/v1/inbox/digest`), an optional policy-scoped direct-message
 gateway (`/v1/messages/digest`), consented sleep (`/v1/health/sleep/{day}`),
 and consented personal-baseline biometrics (`/v1/health/biometrics/{day}`).
@@ -31,6 +32,34 @@ remain fail-closed with an explicit degraded state when its provider is absent
 or unavailable. The matrix intentionally does not promise unsupported social
 platform access or a clinical diagnosis.
 
+Those inputs feed one deliberately feedless HUD contract with thirteen card
+kinds: this day in history, useful messages, email and team bottlenecks,
+calendar, weather, uncertainty-labelled extended outlooks, flights, markets,
+KPIs, tasks, news, and an optional audio briefing. Ten cities may be watched;
+forecasts through day 14 are distinguished from explicitly uncertain day
+15–21 outlooks. The product never deep-links into a social application unless
+a consented, content-hash-bound AI decision scored the item at least 0.8,
+requires reauthentication, and forbids a feed fallback. Integrations use only
+provider-supported APIs, webhooks, or user exports; scraping is outside the
+contract.
+
+Individual and organization onboarding share the public Shared Auth identity
+authority while Happy Wakey owns tenant membership, seat allocation, connector
+consent, and product authorization. `user.hawky.pro` is the individual entry;
+`org.hawky.pro` is the organization entry. Product tables contain only opaque
+credential references, never provider credentials. Tenant and subject RLS,
+independent TypeSpec and JSON Schema authorities, JSON Schema plus protobuf
+runtime validation, 1–4100 dimensional vectors, corrected regression findings,
+and a hard ban on causal claims are all acceptance invariants.
+
+Realtime browser updates use tenant-partitioned, hibernating Cloudflare Durable
+Object WebSockets with Shared Auth admission, 15-minute sessions, 128 sockets
+per tenant object, and 32 KiB frames. Server-to-server stateful work remains
+TLS length-delimited JSON. Admin web/API/MCP traffic is private-VPC mTLS only;
+public admin ingress is forbidden. Ores Chat supports bounded, explicitly
+scoped sales, customer support, organization admin, internal operator, and
+owner sessions.
+
 Both desktop competitors share one Bluetooth contract: native `btleplug` in the
 Rust/Qt app and native `universal_ble` in Flutter. They discover one product
 service UUID, write only the versioned preview-command characteristic, cap
@@ -39,10 +68,12 @@ same generation-fenced formal Bluetooth lane. Scans and connections are bounded
 to four and eight seconds respectively.
 
 The committed topology and its unit tests are a reviewable source/revision
-contract, not proof that every service is deployed. It records immutable merged
-API, web, CLI, Rust desktop, Flutter, interface, core, client, sync, and
-infrastructure revisions. The five executable application heads require green
-hosted checks on those exact merged `main` revisions; authentication now uses
+contract, not proof that every service is deployed. It records all 23 required,
+non-empty, unarchived Happy Wakey repositories and immutable merged revisions
+for every independently versioned implementation (the E2E repository's own
+merge commit is necessarily its self-revision authority). The five executable
+application heads require green hosted checks on their exact merged `main`
+revisions; authentication now uses
 the public, versioned Shared Auth introspection wire contract rather than a
 private source dependency. Production claims still require immutable image
 digests and live tests against the pinned Shared Auth, NATS, database,
@@ -52,7 +83,13 @@ Bluetooth hardware, and infrastructure revisions.
 
 - `tests/topology.test.mjs` fails when any avenue, authority boundary, durability requirement, or Ores telemetry contract is removed.
 - The same topology tests lock the morning-brief contract authority, canonical
-  routes, per-surface bounds, independent lanes, and fail-closed degradation.
+  routes, 13 HUD card kinds, per-surface bounds, independent lanes, forecast
+  uncertainty, and fail-closed degradation.
+- Fleet tests lock all 23 repository names, onboarding and host boundaries,
+  supported-provider-only curation, usefulness-gated feedless deep links,
+  independent schema authorities, RLS, vector/regression limits, common Ores
+  integration authorities, bounded WebSockets/TLS, Ores Chat audiences, and
+  private admin MCP isolation.
 - The same suite rejects Bluetooth UUID drift, credentials in device commands,
   unbounded commands/timeouts, missing native implementations, and stale-effect
   acceptance in either desktop competitor.

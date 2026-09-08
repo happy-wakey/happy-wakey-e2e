@@ -5,5 +5,7 @@ zed_modules/
 .env.*
 !.env.example
 artifacts/
+tmp/
+temp/
 *.log
 .DS_Store
