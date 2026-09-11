@@ -10,8 +10,20 @@
     { "id": "focus", "label": "Focus" },
     { "id": "devices", "label": "Devices" },
     { "id": "browser", "label": "Browser" },
-    { "id": "settings", "label": "Settings" }
+    { "id": "settings", "label": "Settings" },
+    { "id": "briefing", "label": "Morning brief" }
   ],
+  "morningBrief": {
+    "lanes": ["inbox", "direct_messages", "health"],
+    "maxInboxItems": 20,
+    "maxMessageItems": 20,
+    "maxAnomalies": 8,
+    "gmailContentClass": "metadata_only",
+    "microsoftPermission": "Mail.ReadBasic",
+    "allowedMessageAccess": ["full_read", "throttled_read"],
+    "missingHealthValues": "absent",
+    "authenticatedRedirectsAllowed": false
+  },
   "ble": {
     "serviceUuid": "8e0e0001-7d5a-4c3f-9c31-94e9d447fc01",
     "commandUuid": "8e0e0002-7d5a-4c3f-9c31-94e9d447fc01",
