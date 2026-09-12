@@ -11,6 +11,7 @@ export const REQUIRED_DESTINATION_IDS = Object.freeze([
   'devices',
   'browser',
   'settings',
+  'briefing',
 ]);
 
 export async function loadDesktopParity(
@@ -31,6 +32,22 @@ export function validateDesktopParity(contract) {
     if (!destination.label || destination.label.length > 24) {
       throw new Error(`destination label is invalid: ${destination.id}`);
     }
+  }
+  const morningBrief = contract.morningBrief;
+  if (
+    JSON.stringify(morningBrief?.lanes) !==
+      JSON.stringify(['inbox', 'direct_messages', 'health']) ||
+    morningBrief.maxInboxItems !== 20 ||
+    morningBrief.maxMessageItems !== 20 ||
+    morningBrief.maxAnomalies !== 8 ||
+    morningBrief.gmailContentClass !== 'metadata_only' ||
+    morningBrief.microsoftPermission !== 'Mail.ReadBasic' ||
+    JSON.stringify(morningBrief.allowedMessageAccess) !==
+      JSON.stringify(['full_read', 'throttled_read']) ||
+    morningBrief.missingHealthValues !== 'absent' ||
+    morningBrief.authenticatedRedirectsAllowed !== false
+  ) {
+    throw new Error('Morning brief privacy and response bounds drifted');
   }
   const ble = contract.ble;
   if (
