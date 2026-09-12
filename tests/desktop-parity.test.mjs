@@ -16,7 +16,7 @@ function sibling(relative) {
 
 test('desktop destinations stay at Flutter/Qt feature parity', async () => {
   const contract = validateDesktopParity(await loadDesktopParity());
-  assert.equal(contract.destinations.length, 10);
+  assert.equal(contract.destinations.length, 11);
   assert.deepEqual(
     contract.destinations.map(({ label }) => label),
     [
@@ -30,8 +30,29 @@ test('desktop destinations stay at Flutter/Qt feature parity', async () => {
       'Devices',
       'Browser',
       'Settings',
+      'Morning brief',
     ],
   );
+});
+
+test('Morning brief stays bounded, least-privilege, and fail-closed', async () => {
+  const { morningBrief } = validateDesktopParity(await loadDesktopParity());
+  assert.deepEqual(morningBrief.lanes, [
+    'inbox',
+    'direct_messages',
+    'health',
+  ]);
+  assert.equal(morningBrief.maxInboxItems, 20);
+  assert.equal(morningBrief.maxMessageItems, 20);
+  assert.equal(morningBrief.maxAnomalies, 8);
+  assert.equal(morningBrief.gmailContentClass, 'metadata_only');
+  assert.equal(morningBrief.microsoftPermission, 'Mail.ReadBasic');
+  assert.deepEqual(morningBrief.allowedMessageAccess, [
+    'full_read',
+    'throttled_read',
+  ]);
+  assert.equal(morningBrief.missingHealthValues, 'absent');
+  assert.equal(morningBrief.authenticatedRedirectsAllowed, false);
 });
 
 test('BLE preview command is versioned, bounded, and credential-free', async () => {
@@ -133,5 +154,42 @@ test('product servers do not fail-open to baked Shared Auth or API URLs', () => 
     for (const pattern of forbidden) {
       assert.doesNotMatch(source, pattern);
     }
+  }
+});
+
+test('sibling native clients implement the bounded Morning brief when checked out', () => {
+  const files = {
+    flutterAuth: sibling('../../happy-wakey-flutter/lib/src/services/auth_service.dart'),
+    flutterInbox: sibling('../../happy-wakey-flutter/lib/src/services/inbox_service.dart'),
+    flutterScreen: sibling(
+      '../../happy-wakey-flutter/lib/src/ui/screens/morning_brief_screen.dart',
+    ),
+    rustGateway: sibling('../../happy-wakey-desktop-app.rs/src/gateway.rs'),
+    rustHttp: sibling('../../happy-wakey-desktop-app.rs/src/http.rs'),
+    rustInbox: sibling('../../happy-wakey-desktop-app.rs/src/services/inbox.rs'),
+    rustBrief: sibling(
+      '../../happy-wakey-desktop-app.rs/src/services/morning_brief.rs',
+    ),
+    rustPanel: sibling(
+      '../../happy-wakey-desktop-app.rs/qml/MorningBriefPanel.qml',
+    ),
+  };
+  if (!Object.values(files).every(existsSync)) return;
+
+  const sources = Object.fromEntries(
+    Object.entries(files).map(([name, file]) => [name, readFileSync(file, 'utf8')]),
+  );
+  assert.match(sources.flutterAuth, /gmail\.metadata/);
+  assert.match(sources.flutterAuth, /Mail\.ReadBasic/);
+  assert.doesNotMatch(sources.flutterInbox, /bodyPreview|format': 'full'/);
+  assert.match(sources.flutterScreen, /Important email/);
+  assert.match(sources.rustInbox, /MAX_INBOX_ITEMS: usize = 20/);
+  assert.match(sources.rustBrief, /MAX_MESSAGE_ITEMS: usize = 20/);
+  assert.match(sources.rustBrief, /MAX_ANOMALIES: usize = 8/);
+  assert.match(sources.rustHttp, /redirect\(reqwest::redirect::Policy::none\(\)\)/);
+  assert.match(sources.rustGateway, /is_canonical_gateway_path/);
+  assert.match(sources.rustPanel, /Sleep & recovery/);
+  for (const source of [sources.flutterScreen, sources.rustPanel]) {
+    assert.doesNotMatch(source, /providerToken|provider_token|access_token/);
   }
 });
