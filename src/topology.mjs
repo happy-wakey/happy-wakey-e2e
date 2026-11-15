@@ -432,6 +432,21 @@ export function validateTopology(topology) {
     throw new Error('cross-mode bounds or fallback policy changed');
   }
 
+  // Source syntax and host-side contract checks do not prove guest parity.
+  const atto = topology.languageSurfaces?.atto;
+  if (
+    atto?.sourceExtension !== '.atto' ||
+    atto.clientRepository !== 'happy-wakey-clients' ||
+    atto.interfaceRepository !== 'happy-wakey-interfaces' ||
+    atto.status !== 'source-contract-only' ||
+    atto.hostTransportVerified !== false ||
+    atto.guestCompilationVerified !== false ||
+    atto.wireSerializerVerified !== false ||
+    atto.allowProductionUse !== false
+  ) {
+    throw new Error('AttoLang readiness must remain source-only and fail closed');
+  }
+
   validateMorningBrief(topology.morningBrief);
 
   return topology;

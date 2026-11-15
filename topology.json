@@ -275,6 +275,18 @@
       "degradedStateRequired": true
     }
   },
+  "languageSurfaces": {
+    "atto": {
+      "sourceExtension": ".atto",
+      "clientRepository": "happy-wakey-clients",
+      "interfaceRepository": "happy-wakey-interfaces",
+      "status": "source-contract-only",
+      "hostTransportVerified": false,
+      "guestCompilationVerified": false,
+      "wireSerializerVerified": false,
+      "allowProductionUse": false
+    }
+  },
   "modes": [
     {
       "id": "direct_db_read",
