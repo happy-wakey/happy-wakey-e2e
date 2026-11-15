@@ -79,6 +79,16 @@ private source dependency. Production claims still require immutable image
 digests and live tests against the pinned Shared Auth, NATS, database,
 Bluetooth hardware, and infrastructure revisions.
 
+## AttoLang source-contract readiness
+
+The initial `.atto` declarations in `happy-wakey-clients` and
+`happy-wakey-interfaces` are **source-only draft surfaces**. The topology
+records them separately from immutable merged implementation pins and refuses
+to equate static schema parity with a runnable Atto HTTP transport, guest
+compiler execution, or serializer. `tests/atto-readiness.test.mjs` locks
+these negative readiness claims until exact-head, target-specific evidence
+is available. No production deployment is authorized by this metadata.
+
 ## Test lanes
 
 - `tests/topology.test.mjs` fails when any avenue, authority boundary, durability requirement, or Ores telemetry contract is removed.
